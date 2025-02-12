@@ -1,0 +1,40 @@
+# Test your FastAPI endpoints
+
+GET http://127.0.0.1:8000/
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/hello/User
+Accept: application/json
+
+###
+
+### 登入
+POST http://localhost:8000/login
+Content-Type: application/json
+
+{
+    "username": "f1000000",
+    "password": "test123"
+}
+
+### 取得畢業資訊
+GET http://localhost:8000/graduation
+Authorization: Bearer {{auth_token}}
+
+### 取得個人課程資訊
+GET http://localhost:8000/personal/course
+Authorization: Bearer {{auth_token}}
+
+### 請假申請
+POST http://localhost:8000/leave
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+    "leave_type": "事假",
+    "start_date": "2024-03-20T08:00:00",
+    "end_date": "2024-03-20T17:00:00",
+    "reason": "個人事務"
+}
