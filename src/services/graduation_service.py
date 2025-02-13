@@ -1,39 +1,67 @@
 from typing import Optional
-from ..models.graduation import GraduationRequirement
-from ..utils.cache import get_cache, set_cache
-from ..config import settings
+
+from sis.connection import Connection
+
+from src.database import cache_manager
+from src.models.api_response import APIResponse
+from src.models.collection import Collection
+from src.routes.student import GraduationType
+
+from sis.student_information_system import StudentInformationSystem as SIS
+
 
 class GraduationService:
     @staticmethod
-    async def get_graduation_requirements(student_id: str, refresh: bool = False) -> Optional[GraduationRequirement]:
-        # 嘗試從快取獲取資料
-        cache_data = await get_cache("graduation_requirements", student_id, refresh)
-        if cache_data and not refresh:
-            return GraduationRequirement(**cache_data)
+    def __get_collection_by_type(graduation_type: GraduationType) -> Collection:
+        """ 使用字典映射來選擇 Collection """
+        collection_mapping = {
+            GraduationType.CHINESE: Collection.GRADUATION_CHINESE,
+            GraduationType.ENGLISH: Collection.GRADUATION_ENGLISH,
+            GraduationType.COMPUTER: Collection.GRADUATION_COMPUTER,
+            GraduationType.WORKPLACE_EXP: Collection.GRADUATION_WORKPLACE,
+            GraduationType.OVERVIEW: Collection.GRADUATION
+        }
+        return collection_mapping.get(graduation_type, None) or ValueError("Invalid graduation type")
 
-        # TODO: 從 SIS 系統獲取畢業門檻資訊
-        # 這裡先模擬資料
-        requirements = GraduationRequirement(
-            student_id=student_id,
-            english_qualified=False,
-            chinese_qualified=True,
-            computer_qualified=False,
-            workplace_exp_qualified=True,
-            total_credits=120,
-            required_credits=90,
-            elective_credits=30,
-            is_qualified=False
-        )
+    @staticmethod
+    async def get_graduation(
+            sis_conn: Connection,
+            graduation_type: GraduationType,
+            refresh: bool = False
+    ) -> APIResponse:
+
+        collection = GraduationService.__get_collection_by_type(graduation_type)
+
+        # 嘗試從快取獲取資料
+        cache_data = await cache_manager.get_cache(collection, sis_conn.student_id, refresh=refresh)
+
+        if cache_data and not refresh:
+            return APIResponse.success(cache_data, "Graduation information fetched successfully")
+
+        # 使用字典映射來選擇對應的函數
+        graduation_fetch_functions = {
+            Collection.GRADUATION_CHINESE: SIS.personal_info.graduation.chinese,
+            Collection.GRADUATION_ENGLISH: SIS.personal_info.graduation.english,
+            Collection.GRADUATION_COMPUTER: SIS.personal_info.graduation.computer,
+            Collection.GRADUATION_WORKPLACE: SIS.personal_info.graduation.workplace_exp,
+            Collection.GRADUATION: SIS.personal_info.graduation.info
+        }
+
+        fetch_function = graduation_fetch_functions.get(collection, None)
+        if not fetch_function:
+            return APIResponse.error(status_code=400, msg="Invalid graduation type")
+
+        try:
+            data = fetch_function(sis_conn)
+            if not data:
+                raise ValueError("No graduation data found")
+        except Exception:
+            return APIResponse.error(status_code=404, msg="Failed to fetch graduation information from SIS")
 
         # 更新快取
-        await set_cache(
-            "graduation_requirements",
-            student_id,
-            requirements.model_dump(),
-            settings.CACHE_DURATION
-        )
+        await cache_manager.set_cache(collection, sis_conn.student_id, data)
 
-        return requirements
+        return APIResponse.success(data, "Graduation information fetched successfully")
 
     @staticmethod
     async def get_graduation_pdf(student_id: str) -> Optional[bytes]:

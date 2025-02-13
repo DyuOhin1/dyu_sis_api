@@ -1,7 +1,6 @@
 from typing import Optional, List
 from datetime import datetime
 from ..models.leave import LeaveRequest, LeaveResponse
-from ..utils.cache import get_cache, set_cache
 
 class LeaveService:
     @staticmethod

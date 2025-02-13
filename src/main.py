@@ -2,8 +2,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.database import init_indexes
-from src.routes import auth, student, graduation, leave
+from src.database import init_indexes   
+from src.routes import auth, student, leave, pdf
 
 
 @asynccontextmanager
@@ -39,11 +39,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+version = "v1"
+
 # 路由註冊
-app.include_router(auth.router, prefix="/auth", tags=["認證"])
-app.include_router(student.router, prefix="/student", tags=["學生資訊"])
-app.include_router(graduation.router, prefix="/graduation", tags=["畢業審查"])
-app.include_router(leave.router, prefix="/leave", tags=["請假"])
+app.include_router(auth.router, prefix=f"/api/{version}/auth", tags=["認證"])
+app.include_router(student.router, prefix=f"/api/{version}/student", tags=["學生資訊"])
+app.include_router(leave.router, prefix=f"/api/{version}/leave", tags=["課程請假"])
+app.include_router(pdf.router, prefix=f"/api/{version}/pdf", tags=["PDF檔案資訊"])
 
 @app.get("/")
 async def root():
