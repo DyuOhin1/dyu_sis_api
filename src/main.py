@@ -42,10 +42,10 @@ app.add_middleware(
 version = "v1"
 
 # 路由註冊
-app.include_router(auth.router, prefix=f"/api/{version}/auth", tags=["認證"])
-app.include_router(student.router, prefix=f"/api/{version}/student", tags=["學生資訊"])
-app.include_router(leave.router, prefix=f"/api/{version}/leave", tags=["課程請假"])
-app.include_router(pdf.router, prefix=f"/api/{version}/pdf", tags=["PDF檔案資訊"])
+app.include_router(auth.router, prefix=f"/api/{version}/auth", tags=["Authentication"])
+app.include_router(student.router, prefix=f"/api/{version}/student", tags=["Personal Information"])
+app.include_router(leave.router, prefix=f"/api/{version}/leave", tags=["Leave Management"])
+app.include_router(pdf.router, prefix=f"/api/{version}/pdf", tags=["PDF file generation"])
 
 @app.get("/")
 async def root():

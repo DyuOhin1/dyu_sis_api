@@ -62,8 +62,3 @@ class GraduationService:
         await cache_manager.set_cache(collection, sis_conn.student_id, data)
 
         return APIResponse.success(data, "Graduation information fetched successfully")
-
-    @staticmethod
-    async def get_graduation_pdf(student_id: str) -> Optional[bytes]:
-        # TODO: 實作獲取畢業審查表 PDF 的邏輯
-        return None 

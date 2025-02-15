@@ -29,7 +29,7 @@ class CacheManager:
             refresh: 是否強制更新快取
         """
         collection = self.db[collection.value]
-        
+
         # 建構查詢條件
         query = {"student_id": student_id}
         if semester:
@@ -37,21 +37,24 @@ class CacheManager:
                 "year": semester["year"],
                 "semester": semester["semester"]
             })
-            
-        # 查詢快取
-        cache_data = await collection.find_one(query)
-        
+
+        try:
+            # 查詢快取
+            cache_data = await collection.find_one(query)
+        except Exception as e:
+            raise RuntimeError(f"Error querying cache: {e}")
+
         if not cache_data:
             return None
-            
+
         current_time = int(time.time())
-        
+
         # 檢查快取是否過期
         if not refresh and cache_data.get("updated_timestamp"):
             cache_duration = cache_data.get("cache_duration", self.default_cache_duration)
             if current_time - cache_data["updated_timestamp"] < cache_duration:
                 return cache_data["data"]
-                
+
         return None
 
     async def set_cache(
@@ -85,7 +88,7 @@ class CacheManager:
             "cache_duration": cache_duration or self.default_cache_duration,
             "data": data
         }
-        
+
         # 根據是否有學期資訊決定 _id
         if semester:
             cache_document.update({
@@ -101,13 +104,16 @@ class CacheManager:
         else:
             cache_document["_id"] = student_id
             query = {"_id": student_id}
-        
-        # 使用 upsert 更新或插入快取
-        await collection.update_one(
-            query,
-            {"$set": cache_document},
-            upsert=True
-        )
+
+        try:
+            # 使用 upsert 更新或插入快取
+            await collection.update_one(
+                query,
+                {"$set": cache_document},
+                upsert=True
+            )
+        except Exception as e:
+            raise RuntimeError(f"Error setting cache: {e}")
 
     async def delete_cache(
         self,

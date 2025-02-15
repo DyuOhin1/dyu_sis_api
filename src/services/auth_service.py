@@ -1,17 +1,7 @@
 from typing import Union
 
-from fastapi import Response
 from icloud.icloud import iCloud
 from sis.connection import Connection as SISConn
-from sis.student_information_system import StudentInformationSystem as SIS
-from starlette import status
-
-from src.config import settings
-from src.models.api_response import APIResponse
-from src.models.auth import LoginRequest, JWTPayload, Connection, LoginSuccessResponse
-from src.utils.auth import create_jwt_token
-from src.utils.time_unit import TimeUnit
-
 from sis.exception import (
     EmptyInputException,
     InvalidStudentIDException,
@@ -22,6 +12,14 @@ from sis.exception import (
     HTTPRequestException,
     UnexpectedResponseException
 )
+from sis.student_information_system import StudentInformationSystem as SIS
+from starlette import status
+
+from src.config import settings
+from src.models.api_response import APIResponse
+from src.models.auth import LoginRequest, JWTPayload, Connection, LoginSuccessResponse
+from src.utils.auth import create_jwt_token
+from src.utils.time_unit import TimeUnit
 
 
 class AuthService:

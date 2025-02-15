@@ -13,6 +13,7 @@ class Collection(Enum):
     MILITARY = "military"
     INJURY = "injury"
     ADVISORS = "advisors"
+    ADVISOR_INFO = "advisor_info"
     REWARDS_AND_PENALTIES = "rewards_and_penalties"
     PROOF_OF_ENROLLMENT = "proof_of_enrollment"
     SCHOLARSHIP = "scholarship"

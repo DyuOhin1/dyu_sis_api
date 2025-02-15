@@ -1,5 +1,6 @@
 import json
 
+from fastapi import HTTPException
 from icloud.icloud import iCloud
 from icloud.personal.constants.lang import Lang
 from icloud.personal.utils.icloud_utils import iCloudUtils
@@ -11,6 +12,8 @@ from typing import Optional
 from src.models.api_response import APIResponse
 from src.models.collection import Collection
 from src.database import cache_manager
+from src.utils.exception import StudentInfoNotFoundException, NotFoundException
+from src.utils.semester_manager import SemesterManager
 
 
 class StudentService:
@@ -23,16 +26,13 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Student information fetched successfully")
+            return cache_data
 
         # 從 SIS 系統獲取學生資訊
         data = SIS.personal_info.privacy(sis_conn)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch student information from SIS"
-            )
+            raise StudentInfoNotFoundException("Failed to fetch student information")
 
         await cache_manager.set_cache(
             Collection.STUDENT_PROFILE,
@@ -40,7 +40,8 @@ class StudentService:
             data
         )
 
-        return APIResponse.success(data, "Student information fetched successfully")
+        return data
+
 
     @staticmethod
     async def get_student_semester(
@@ -54,16 +55,13 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Student semester information fetched successfully")
+            return cache_data
 
         # 從 iCloud 系統獲取學期資訊
         data = iCloudUtils.student_semester(icloud_conn)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch student semester information from iCloud"
-            )
+            raise NotFoundException("Failed to fetch student semester information")
 
         await cache_manager.set_cache(
             Collection.STUDENT_SEMESTER,
@@ -91,23 +89,15 @@ class StudentService:
 
         # 如果沒有提供學年學期，則取得當前學期
         if not seme or not year:
-            try:
-                # TODO: 學年學期應該由資料庫直接取得快取。
-                semester = iCloudUtils.student_semester(icloud_conn)
-            except json.JSONDecodeError:
-                return APIResponse.error(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    msg="Failed to fetch student semester information"
-                )
-            first_semester = semester[0]
-            year = first_semester["smye"]
-            seme = first_semester["smty"]
+            semester = await SemesterManager.get_current_semester(icloud_conn)
+            year = semester.year
+            seme = semester.seme
             cache_data = await cache_manager.get_cache(
                 Collection.COURSE_TIMETABLE,
                 icloud_conn.student_id,
                 semester={
-                    "year": year,
-                    "semester": semester
+                    "year": semester.year,
+                    "semester": semester.seme
                 }
             )
         else:
@@ -121,27 +111,18 @@ class StudentService:
             )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Course information fetched successfully")
+            return cache_data
 
         # 從 SIS 系統獲取課程資訊
-        try:
-            data = iCloud.course_information.timetable(
-                icloud_conn,
-                year,
-                seme
-            )
-        except Exception:
-            # TODO: Add proper exception handling
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch course information"
-            )
+
+        data = iCloud.course_information.timetable(
+            icloud_conn,
+            year,
+            seme
+        )
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch course information"
-            )
+            raise NotFoundException("Failed to fetch course information")
 
         await cache_manager.set_cache(
             Collection.COURSE_TIMETABLE,
@@ -153,7 +134,7 @@ class StudentService:
             }
         )
 
-        return APIResponse.success(data, "Course information fetched successfully")
+        return data
 
     @staticmethod
     async def get_course_warning(
@@ -167,17 +148,14 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Course warning information fetched successfully")
+            return cache_data
 
         # 從 SIS 系統獲取課程警告資訊
         data = SIS.personal_info.course_warning(sis_conn)
         data = json.dumps([obj.__dict__ for obj in data])
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch course warning information from SIS"
-            )
+            raise NotFoundException("Failed to fetch course warning information")
 
         await cache_manager.set_cache(
             Collection.COURSE_WARNING,
@@ -185,7 +163,7 @@ class StudentService:
             data
         )
 
-        return APIResponse.success(data, "Course warning information fetched successfully")
+        return data
 
     @staticmethod
     async def get_barcode(
@@ -195,12 +173,9 @@ class StudentService:
         data = SIS.personal_info.personal_barcode(sis_conn.student_id)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch barcode information from SIS"
-            )
+            raise NotFoundException("Failed to fetch barcode information")
 
-        return APIResponse.success(data, "Barcode information fetched successfully")
+        return data
 
     @staticmethod
     async def get_personal_image(
@@ -210,12 +185,9 @@ class StudentService:
         data = SIS.personal_info.personal_image(sis_conn.student_id)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch barcode information from SIS"
-            )
+            raise NotFoundException("Failed to fetch personal image")
 
-        return APIResponse.success(data, "Barcode information fetched successfully")
+        return data
 
     @staticmethod
     async def get_injury(
@@ -229,16 +201,13 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Injury information fetched successfully")
+            return cache_data
 
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.injury_record(sis_conn)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch injury information from iCloud"
-            )
+            raise NotFoundException("Failed to fetch injury information")
 
         await cache_manager.set_cache(
             Collection.INJURY,
@@ -246,7 +215,7 @@ class StudentService:
             data
         )
 
-        return APIResponse.success(data, "Injury information fetched successfully")
+        return data
 
     @staticmethod
     async def get_military(
@@ -260,16 +229,13 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Military information fetched successfully")
+            return cache_data
 
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.military_record(icloud_conn)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch military information from iCloud"
-            )
+            raise NotFoundException("Failed to fetch military information")
 
         await cache_manager.set_cache(
             Collection.INJURY,
@@ -277,7 +243,7 @@ class StudentService:
             data
         )
 
-        return APIResponse.success(data, "Military information fetched successfully")
+        return data
 
     @staticmethod
     async def get_advisors(
@@ -291,16 +257,13 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Advisors information fetched successfully")
+            return cache_data
 
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.advisors(icloud_conn)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch advisors information from iCloud"
-            )
+            raise NotFoundException("Failed to fetch advisors information")
 
         await cache_manager.set_cache(
             Collection.ADVISORS,
@@ -308,7 +271,28 @@ class StudentService:
             data
         )
 
-        return APIResponse.success(data, "Advisors information fetched successfully")
+        return data
+
+    @staticmethod
+    async def get_advisor_info(
+            icloud_conn: Connection,
+            advisor_id: str,
+    ):
+        # 從 SIS 系統獲取課程警告資訊
+        try:
+            data = iCloud.advisor_info(icloud_conn, advisor_id)
+            if not data or len(data) == 0:
+                raise ValueError("No advisor data found")
+
+            data = data[0]
+        except Exception:
+            raise NotFoundException("Failed to fetch advisor information")
+
+        if not data:
+            raise NotFoundException("Failed to fetch advisor information")
+
+        return data
+
 
     @staticmethod
     async def get_rewards_and_penalties(
@@ -322,24 +306,20 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Rewards and penalties information fetched successfully")
+            return cache_data
 
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.rewards_and_penalties_record(icloud_conn)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch rewards and penalties information from iCloud"
-            )
-
+            raise NotFoundException("Failed to fetch rewards and penalties information")
         await cache_manager.set_cache(
             Collection.INJURY,
             icloud_conn.student_id,
             data
         )
 
-        return APIResponse.success(data, "Rewards and penalties information fetched successfully")
+        return data
 
     @staticmethod
     async def get_enrollment(
@@ -354,16 +334,13 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Enrollment information fetched successfully")
+           return cache_data
 
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.proof_of_enrollment(icloud_conn, lang=lang)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch enrollment information from iCloud"
-            )
+            raise NotFoundException("Failed to fetch enrollment information")
 
         await cache_manager.set_cache(
             Collection.PROOF_OF_ENROLLMENT,
@@ -371,7 +348,7 @@ class StudentService:
             data
         )
 
-        return APIResponse.success(data, "Enrollment information fetched successfully")
+        return data
 
     @staticmethod
     async def get_scholarship(
@@ -385,16 +362,13 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Scholarship information fetched successfully")
+            return cache_data
 
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.scholarship_record(icloud_conn)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch scholarship information from iCloud"
-            )
+            raise NotFoundException("Failed to fetch scholarship information")
 
         await cache_manager.set_cache(
             Collection.PROOF_OF_ENROLLMENT,
@@ -402,7 +376,7 @@ class StudentService:
             data
         )
 
-        return APIResponse.success(data, "Scholarship information fetched successfully")
+        return data
 
     @staticmethod
     # printer point
@@ -417,16 +391,13 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Printer point information fetched successfully")
+            return cache_data
 
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.printer_point(icloud_conn)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch printer point information from iCloud"
-            )
+            raise NotFoundException("Failed to fetch printer point information")
 
         await cache_manager.set_cache(
             Collection.PRINTER_POINTS,
@@ -434,7 +405,7 @@ class StudentService:
             {"point" : data}
         )
 
-        return APIResponse.success({"point" : data}, "Printer point information fetched successfully")
+        return {"point" : data}
 
     @staticmethod
     async def get_dorm(
@@ -448,16 +419,13 @@ class StudentService:
         )
 
         if cache_data and not refresh:
-            return APIResponse.success(cache_data, "Dorm information fetched successfully")
+            return cache_data
 
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.dorm_record(icloud_conn)
 
         if not data:
-            return APIResponse.error(
-                status_code=status.HTTP_404_NOT_FOUND,
-                msg="Failed to fetch dorm information from iCloud"
-            )
+            raise NotFoundException("Failed to fetch dorm information")
 
         await cache_manager.set_cache(
             Collection.DORM,
@@ -465,4 +433,47 @@ class StudentService:
             data
         )
 
-        return APIResponse.success(data, "Dorm information fetched successfully")
+        return data
+
+    @staticmethod
+    async def get_annual_grade(
+        icloud_conn: Connection,
+        year: Optional[str] = None,
+        semester: Optional[str] = None,
+        refresh: bool = False
+    ):
+        cache_data = await cache_manager.get_cache(
+            Collection.ANNUAL_GRADE,
+            icloud_conn.student_id,
+            refresh=refresh,
+            semester={
+                "year": year,
+                "semester": semester
+            }
+        )
+
+        if cache_data and not refresh:
+            return cache_data
+
+        try:
+            if not year or not semester:
+                data = iCloud.course_information.annual_grade(icloud_conn)
+            else:
+                data = iCloud.course_information.grade(icloud_conn, year, semester)
+        except Exception:
+            raise NotFoundException("Failed to fetch annual grade information from iCloud")
+
+        if not data:
+            raise NotFoundException("Failed to fetch annual grade information")
+
+        await cache_manager.set_cache(
+            Collection.ANNUAL_GRADE,
+            icloud_conn.student_id,
+            data,
+            semester={
+                "year": year,
+                "semester": semester
+            }
+        )
+
+        return data

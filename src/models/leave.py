@@ -1,18 +1,22 @@
 from pydantic import BaseModel
-from datetime import datetime
-from typing import Optional, List
+from datetime import datetime, date
+from typing import Optional, List, BinaryIO
+
+from sis.course.leave.constant.departments import Department
+from sis.course.leave.constant.leave_type import LeaveType
+from sis.course.leave.modals.leave_form_data.course_leave_form_data import CourseLeaveFormData
+from sis.modals.course import Course
+
+from src.models.student import CourseInfo
+
 
 class LeaveRequest(BaseModel):
-    leave_type: str
-    start_date: datetime
-    end_date: datetime
+    leave_type: LeaveType
+    course: List[CourseInfo]
     reason: str
-    document_ids: List[str] = []
+    from_dept: Optional[Department] = None
 
-class LeaveResponse(BaseModel):
-    leave_id: str
-    student_id: str
-    status: str
-    created_at: datetime
-    updated_at: datetime
-    leave_request: LeaveRequest 
+class CourseLeaveData(BaseModel):
+    id : str
+    date : date
+    period : int

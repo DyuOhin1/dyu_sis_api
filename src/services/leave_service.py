@@ -1,26 +1,26 @@
-from typing import Optional, List
 from datetime import datetime
-from ..models.leave import LeaveRequest, LeaveResponse
+from pathlib import Path
+from typing import List
+
+from src.models.leave import LeaveRequest
+
+from sis.student_information_system import StudentInformationSystem as SIS
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+TEMP_FILE_DIR = BASE_DIR / "temp"
+TEMP_FILE_DIR.mkdir(parents=True, exist_ok=True)
 
 class LeaveService:
     @staticmethod
-    async def create_leave(student_id: str, leave_request: LeaveRequest) -> LeaveResponse:
+    async def create_leave(student_id: str, leave_request: LeaveRequest):
         # TODO: 實作請假申請邏輯
         
-        current_time = datetime.utcnow()
-        response = LeaveResponse(
-            leave_id=f"LEAVE_{current_time.timestamp()}",
-            student_id=student_id,
-            status="pending",
-            created_at=current_time,
-            updated_at=current_time,
-            leave_request=leave_request
-        )
+
         
-        return response
+        pass
 
     @staticmethod
-    async def get_leave_history(student_id: str) -> List[LeaveResponse]:
+    async def get_leave_history(student_id: str):
         # TODO: 實作獲取請假紀錄邏輯
         return []
 
