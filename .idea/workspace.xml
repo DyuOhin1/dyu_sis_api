@@ -5,23 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c716e174-21c2-43c3-a37e-d6f4a024622c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/services/pdf_service.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/exception.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/semester_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dyu_sis_api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dyu_sis_api.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/collection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/collection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/leave.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/leave.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/leave.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/leave.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/pdf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/student.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/student.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/auth_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/auth_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/graduation_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/graduation_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/leave_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/leave_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/student_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/student_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/cache.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/connect_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/connect_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/exception.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/exception.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,32 +45,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;FastAPI.dyu_sis_api.executor&quot;: &quot;Run&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-Proofreading missing languages information&quot;: &quot;Proofreading missing languages information&quot;,
-    &quot;Notification.DoNotAsk-Proofreading missing languages information&quot;: &quot;true&quot;,
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "FastAPI.dyu_sis_api.executor": "Run",
+    "Notification.DisplayName-DoNotAsk-Proofreading missing languages information": "Proofreading missing languages information",
+    "Notification.DoNotAsk-Proofreading missing languages information": "true",
+    "Python.app.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/zhangf099/ohin1/code/dyu_sis_api",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/utils" />
       <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="dyu_sis_api" />
       <option name="ENV_FILES" value="" />
@@ -105,7 +103,6 @@
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
-      <option name="SDK_NAME" value="Python 3.9 (dyu_sis_api)" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -127,8 +124,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-PY-243.21565.199" />
-        <option value="bundled-python-sdk-cab1f2013843-4ae2d6a61b08-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.21565.199" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-PY-243.24978.54" />
+        <option value="bundled-python-sdk-91e3b7efe1d4-466328ff949b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.24978.54" />
       </set>
     </attachedChunks>
   </component>
@@ -148,7 +145,12 @@
       <workItem from="1739264014142" duration="911000" />
       <workItem from="1739264929561" duration="3000" />
       <workItem from="1739342794114" duration="24551000" />
-      <workItem from="1739434980444" duration="44194000" />
+      <workItem from="1739434980444" duration="44881000" />
+      <workItem from="1739653243299" duration="3000" />
+      <workItem from="1739653268032" duration="8000" />
+      <workItem from="1739653287474" duration="146000" />
+      <workItem from="1739653447063" duration="240000" />
+      <workItem from="1739653704045" duration="18566000" />
     </task>
     <servers />
   </component>
@@ -158,5 +160,6 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dyu_sis_api$dyu_sis_api.coverage" NAME="dyu_sis_api Coverage Results" MODIFIED="1737995648687" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/dyu_sis_api$app.coverage" NAME="main Coverage Results" MODIFIED="1739433041883" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/dyu_sis_api$test.coverage" NAME="test Coverage Results" MODIFIED="1739719602024" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

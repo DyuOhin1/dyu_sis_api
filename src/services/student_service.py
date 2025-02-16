@@ -191,12 +191,12 @@ class StudentService:
 
     @staticmethod
     async def get_injury(
-            sis_conn: Connection,
+            icloud_conn: Connection,
             refresh: bool = False
     ):
         cache_data = await cache_manager.get_cache(
             Collection.INJURY,
-            sis_conn.student_id,
+            icloud_conn.student_id,
             refresh=refresh
         )
 
@@ -204,14 +204,14 @@ class StudentService:
             return cache_data
 
         # 從 SIS 系統獲取課程警告資訊
-        data = iCloud.personal_information.injury_record(sis_conn)
+        data = iCloud.personal_information.injury_record(icloud_conn)
 
         if not data:
             raise NotFoundException("Failed to fetch injury information")
 
         await cache_manager.set_cache(
             Collection.INJURY,
-            sis_conn.student_id,
+            icloud_conn.student_id,
             data
         )
 

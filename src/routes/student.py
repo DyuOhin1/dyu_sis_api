@@ -9,7 +9,7 @@ from src.services.graduation_service import GraduationService
 from src.services.student_service import StudentService
 from src.utils.auth import verify_jwt_token
 from src.utils.connect_parser import ConnectionParser
-from src.utils.exception import StudentInfoNotFoundException, NotFoundException
+from src.utils.exception import StudentInfoNotFoundException, NotFoundException, InvalidFormatException
 
 router = APIRouter(prefix="")
 
@@ -142,6 +142,11 @@ async def get_course_pdf(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=str("remote server session error. check: " + str(e))
+        )
+    except InvalidFormatException as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
         )
     except NotFoundException as e:
         raise HTTPException(

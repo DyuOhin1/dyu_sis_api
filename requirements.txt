@@ -6,7 +6,7 @@ certifi==2024.12.14
 charset-normalizer==3.4.1
 click==8.1.8
 dnspython==2.7.0
-dyu_sis_lib @ file:///Users/nutt1101/nutt/ohin1/code/dyu_sis_lib/dist/dyu_sis_lib-1.0.0b1-py3-none-any.whl#sha256=73f1f1ebbf17d2cc7fb9be173490de372f602285eb3a7ec1c5c5808a5672dd9c
+dyu_sis_lib @ file:///Users/zhangf099/ohin1/code/dyu_sis_lib/dist/dyu_sis_lib-1.0.0b1-py3-none-any.whl#sha256=1e186a8582dad2f4eec1513911cc552fdf21ca599a932c80ca3481bdaa1ac13b
 ecdsa==0.19.0
 exceptiongroup==1.2.2
 fastapi==0.115.7
