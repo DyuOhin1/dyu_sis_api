@@ -88,7 +88,7 @@ async def get_student_semester(
 async def get_course_info(
     refresh: bool = Query(False, description="強制更新快取"),
     year: Optional[str] = Query(None, description="學年 (例如: 112)"),
-    seme: Optional[str] = Query(None, description="學期 (1 或 2)"),
+    semester: Optional[str] = Query(None, description="學期 (1 或 2)"),
     token: dict = Depends(verify_jwt_token)
 ):
     """
@@ -97,7 +97,7 @@ async def get_course_info(
     Args:
         refresh: 是否強制更新快取
         year: 學年，例如：112
-        seme: 學期，1 或 2
+        semester: 學期，1 或 2
         token: JWT token
     """
     try:
@@ -106,7 +106,7 @@ async def get_course_info(
             icloud_conn,
             refresh,
             year=year,
-            seme=seme
+            seme=semester
         )
         return {
             "data" : data
@@ -127,37 +127,34 @@ async def get_course_info(
             detail=str(e)
         )
 
-@router.get("/graduation")
-async def get_course_pdf(
-    graduation_type: GraduationType,
-    refresh: bool = Query(False, description="強制更新快取"),
-    token: dict = Depends(verify_jwt_token)
+@router.get("/course/attendance")
+async def get_course_attendance_info(
+        refresh: bool = Query(False, description="強制更新快取"),
+        year: Optional[str] = Query(None, description="學年 (例如: 112)"),
+        semester: Optional[str] = Query(None, description="學期 (1 或 2)"),
+        token: dict = Depends(verify_jwt_token)
 ):
-    try:
-        sis_conn = ConnectionParser.parse_connection(token, False)
-        data = await GraduationService.get_graduation(sis_conn, graduation_type, refresh)
-
-        return {"data" : data}
-    except KeyError as e:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=str("remote server session error. check: " + str(e))
-        )
-    except InvalidFormatException as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-    except NotFoundException as e:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(e)
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e)
-        )
+        try:
+            icloud_conn = ConnectionParser.parse_connection(token, True)
+            data = await StudentService.get_course_attendance_info(
+                icloud_conn,
+                refresh,
+                year=year,
+                semester=semester
+            )
+            return {
+                "data": data
+            }
+        except NotFoundException as e:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=str(e)
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=str(e)
+            )
 
 @router.get("/course/warning")
 async def get_course_warning(
@@ -172,6 +169,33 @@ async def get_course_warning(
             refresh
         )
 
+        return {"data" : data}
+    except KeyError as e:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=str("remote server session error. check: " + str(e))
+        )
+    except NotFoundException as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
+@router.get("/course/grade")
+async def get_grade(
+    year: Optional[str] = Query(None, description="學年 (例如: 112)"),
+    semester: Optional[str] = Query(None, description="學期 (1 或 2)"),
+    refresh: bool = Query(False, description="強制更新快取"),
+    token: dict = Depends(verify_jwt_token)
+):
+    try:
+        icloud_conn = ConnectionParser.parse_connection(token, True)
+        data = await StudentService.get_annual_grade(icloud_conn, year, semester, refresh)
         return {"data" : data}
     except KeyError as e:
         raise HTTPException(
@@ -441,19 +465,26 @@ async def get_printer_point(
             detail=str(e)
         )
 
-@router.get("/dorm")
-async def get_dorm(
+@router.get("/graduation")
+async def get_graduation_info(
+    graduation_type: GraduationType,
     refresh: bool = Query(False, description="強制更新快取"),
     token: dict = Depends(verify_jwt_token)
 ):
     try:
-        icloud_conn = ConnectionParser.parse_connection(token, True)
-        data = await StudentService.get_dorm(icloud_conn, refresh)
+        sis_conn = ConnectionParser.parse_connection(token, False)
+        data = await GraduationService.get_graduation(sis_conn, graduation_type, refresh)
+
         return {"data" : data}
     except KeyError as e:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=str("remote server session error. check: " + str(e))
+        )
+    except InvalidFormatException as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
         )
     except NotFoundException as e:
         raise HTTPException(
@@ -466,16 +497,14 @@ async def get_dorm(
             detail=str(e)
         )
 
-@router.get("/grade")
-async def get_grade(
-    year: Optional[str] = Query(None, description="學年 (例如: 112)"),
-    semester: Optional[str] = Query(None, description="學期 (1 或 2)"),
+@router.get("/dorm")
+async def get_dorm(
     refresh: bool = Query(False, description="強制更新快取"),
     token: dict = Depends(verify_jwt_token)
 ):
     try:
         icloud_conn = ConnectionParser.parse_connection(token, True)
-        data = await StudentService.get_annual_grade(icloud_conn, year, semester, refresh)
+        data = await StudentService.get_dorm(icloud_conn, refresh)
         return {"data" : data}
     except KeyError as e:
         raise HTTPException(

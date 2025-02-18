@@ -477,3 +477,53 @@ class StudentService:
         )
 
         return data
+
+    @staticmethod
+    async def get_course_attendance_info(
+            icloud_conn : Connection,
+            refresh : bool,
+            year : str,
+            semester : str
+    ):
+        cache_data = await cache_manager.get_cache(
+            Collection.COURSE_ATTENDANCE,
+            icloud_conn.student_id,
+            refresh=refresh,
+            semester={
+                "year": year,
+                "semester": semester
+            }
+        )
+
+        if cache_data and not refresh:
+            return cache_data
+
+        data = iCloud.course_information.attendance(icloud_conn)
+
+        if not data or len(data) == 0:
+            raise NotFoundException("Failed to fetch course attendance information")
+
+        if not year or not semester:
+            data = data[0]
+        else:
+            found = False
+            for d in data:
+                if str(d["year"]) == year and str(d["sem"]) == semester:
+                    data = d
+                    found = True
+                    break
+
+            if not found:
+                raise NotFoundException("Failed to fetch course attendance information")
+
+        await cache_manager.set_cache(
+            Collection.COURSE_ATTENDANCE,
+            icloud_conn.student_id,
+            data,
+            semester={
+                "year": year,
+                "semester": semester
+            }
+        )
+
+        return data

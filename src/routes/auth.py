@@ -7,6 +7,7 @@ from starlette import status
 
 from src.models.api_response import APIResponse
 from src.models.auth import LoginRequest, LoginSuccessResponse
+from src.models.response_data import ResponseData
 from src.services.auth_service import AuthService
 from src.utils.auth import verify_jwt_token
 
@@ -65,21 +66,27 @@ async def login(
         )
 
 
-@router.get("/logout", status_code=status.HTTP_200_OK)
+@router.get(
+    "/logout",
+    status_code=status.HTTP_200_OK,
+    response_model= ResponseData,
+)
 async def logout(token: dict = Depends(verify_jwt_token)):
     try:
         await AuthService.logout(token)
 
-        return {
-            "data" : {},
-        }
+        return ResponseData(data=None)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(e))
 
-@router.get("/status", status_code=status.HTTP_200_OK)
+@router.get(
+    "/status",
+    status_code=status.HTTP_200_OK,
+    response_model=ResponseData,
+)
 async def logged_status(token: dict = Depends(verify_jwt_token)):
     try:
         is_logged = await AuthService.test_login_status(token)
-        return {"data":  is_logged}
+        return ResponseData(data=is_logged)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
