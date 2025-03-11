@@ -1,11 +1,22 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 
-from src.database import init_indexes   
+from src.database import init_indexes
 from src.routes import auth, student, leave, pdf
 
+class CharsetMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response: Response = await call_next(request)
 
+        # 只在 `application/json` 時加上 `charset=utf-8`
+        if response.headers.get("content-type") == "application/json":
+            response.headers["Content-Type"] = "application/json; charset=utf-8"
+
+        return response
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
@@ -24,10 +35,10 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="DYU SIS API",
-    description="大葉大學學生資訊系統 API",
+    title="Ohin1 OpenAPI",
+    description="Ohin1 OpenAPI",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # CORS 設定
@@ -38,6 +49,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(CharsetMiddleware)
 
 version = "v1"
 
@@ -49,4 +61,4 @@ app.include_router(pdf.router, prefix=f"/api/{version}/pdf", tags=["PDF file gen
 
 @app.get("/")
 async def root():
-    return {"message": "DYU SIS API is running"} 
+    return {"message": "Ohin1 OpenAPI is running..."}

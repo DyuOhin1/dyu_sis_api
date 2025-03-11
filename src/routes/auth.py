@@ -69,13 +69,11 @@ async def login(
 @router.get(
     "/logout",
     status_code=status.HTTP_200_OK,
-    response_model= ResponseData,
 )
 async def logout(token: dict = Depends(verify_jwt_token)):
     try:
         await AuthService.logout(token)
-
-        return ResponseData(data=None)
+        return Response(status_code=status.HTTP_200_OK)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(e))
 

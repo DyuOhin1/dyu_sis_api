@@ -69,7 +69,7 @@ class StudentService:
             data
         )
 
-        return APIResponse.success(data, "Student semester information fetched successfully")
+        return data
 
     @staticmethod
     async def get_course_timetable(
@@ -152,7 +152,7 @@ class StudentService:
 
         # 從 SIS 系統獲取課程警告資訊
         data = SIS.personal_info.course_warning(sis_conn)
-        data = json.dumps([obj.__dict__ for obj in data])
+        data = [d.__dict__ for d in data]
 
         if not data:
             raise NotFoundException("Failed to fetch course warning information")
