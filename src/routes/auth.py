@@ -73,7 +73,11 @@ async def login(
 async def logout(token: dict = Depends(verify_jwt_token)):
     try:
         await AuthService.logout(token)
-        return Response(status_code=status.HTTP_200_OK)
+        return {
+            "data": {
+                "success": True,
+            }
+        }
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(e))
 

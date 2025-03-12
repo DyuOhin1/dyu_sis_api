@@ -466,6 +466,17 @@ class StudentService:
         if not data:
             raise NotFoundException("Failed to fetch annual grade information")
 
+        def transform_entry(entry):
+            """Helper function to transform year/sem into 't' and remove them"""
+            entry["t"] = {"smye": int(entry.pop("year")), "smty": int(entry.pop("sem"))}
+
+        if not year and not semester:
+            data = data['score']
+            for entry in data:  # Use .get() to avoid KeyError
+                transform_entry(entry)
+        else:
+            transform_entry(data)
+
         await cache_manager.set_cache(
             Collection.ANNUAL_GRADE,
             icloud_conn.student_id,
