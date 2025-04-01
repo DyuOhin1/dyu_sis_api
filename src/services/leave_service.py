@@ -61,7 +61,7 @@ class LeaveService:
         )
 
     MAX_FILE_SIZE = 2 * 1024 * 1024  # 2MB
-    ALLOWED_FILE_TYPES = {"image/jpeg", "image/png", "application/pdf", "application/msword"}
+    ALLOWED_FILE_TYPES = {"image/jpeg", "image/png", "application/pdf", "application/msword", "application/octet-stream"}
     TEMP_DIR = Path(__file__).resolve().parent.parent.parent / "temp"
     TEMP_DIR.mkdir(parents=True, exist_ok=True)  # 確保 TEMP 目錄存在
 

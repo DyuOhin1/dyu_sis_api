@@ -7,5 +7,6 @@
     <orderEntry type="jdk" jdkName="Python 3.13 (dyu_sis_api)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="dyu_sis_lib" />
+    <orderEntry type="module" module-name="dyu_sis_lib" />
   </component>
 </module>

@@ -36,7 +36,7 @@ class AuthService:
         icloud_conn = iCloud.login(login_data.username, login_data.password)
 
         payload = JWTPayload(
-            s_id=login_data.username,
+            s_id=login_data.username.upper(),
             sis=Connection(
                 session_id=sis_conn.php_session_id,
                 login_timestamp=sis_conn.last_login_timestamp

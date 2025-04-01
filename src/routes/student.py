@@ -313,7 +313,7 @@ async def get_military(
             detail=str(e)
         )
 
-@router.get("/advisors")
+@router.get("/advisor")
 async def get_advisors(
     refresh: bool = Query(False, description="強制更新快取"),
     token: dict = Depends(verify_jwt_token)

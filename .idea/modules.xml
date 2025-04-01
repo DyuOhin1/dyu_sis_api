@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/dyu_sis_api.iml" filepath="$PROJECT_DIR$/.idea/dyu_sis_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../dyu_sis_lib/.idea/dyu_sis_lib.iml" filepath="$PROJECT_DIR$/../dyu_sis_lib/.idea/dyu_sis_lib.iml" />
     </modules>
   </component>
 </project>

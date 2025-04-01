@@ -55,8 +55,19 @@ class GraduationService:
 
 
         data = fetch_function(sis_conn)
-        if not data:
-            raise ValueError("No graduation data found")
+        if data and ( graduation_type == GraduationType.COMPUTER
+                      or graduation_type == GraduationType.CHINESE
+        or graduation_type == GraduationType.ENGLISH):
+            for i in data['data']:
+                year = i['year']
+                sem = i['semester']
+                del i['year']
+                del i['semester']
+                i['t'] = {
+                    "smye": int(year),
+                    "smty": int(sem)
+                }
+
 
         # 更新快取
         await cache_manager.set_cache(collection, sis_conn.student_id, data)

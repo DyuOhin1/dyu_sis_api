@@ -207,7 +207,17 @@ class StudentService:
         data = iCloud.personal_information.injury_record(icloud_conn)
 
         if not data:
-            raise NotFoundException("Failed to fetch injury information")
+            return data
+        else:
+            for i in data:
+                year = i['year']
+                sem = i['sem']
+                del i['sem']
+                del i['year']
+                i['t'] = {
+                    "smye": year,
+                    "smty": sem
+                }
 
         await cache_manager.set_cache(
             Collection.INJURY,
@@ -235,7 +245,17 @@ class StudentService:
         data = iCloud.personal_information.military_record(icloud_conn)
 
         if not data:
-            raise NotFoundException("Failed to fetch military information")
+            return data
+        else:
+            for i in data:
+                year = i['year']
+                sem = i['sem']
+                del i['sem']
+                del i['year']
+                i['t'] = {
+                    "smye": year,
+                    "smty": sem
+                }
 
         await cache_manager.set_cache(
             Collection.INJURY,
@@ -263,7 +283,17 @@ class StudentService:
         data = iCloud.personal_information.advisors(icloud_conn)
 
         if not data:
-            raise NotFoundException("Failed to fetch advisors information")
+            return data
+        else:
+            for i in data:
+                year = i['year']
+                sem = i['sem']
+                del i['sem']
+                del i['year']
+                i['t'] = {
+                    "smye": year,
+                    "smty": sem
+                }
 
         await cache_manager.set_cache(
             Collection.ADVISORS,
@@ -311,8 +341,18 @@ class StudentService:
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.rewards_and_penalties_record(icloud_conn)
 
-        if not data:
-            raise NotFoundException("Failed to fetch rewards and penalties information")
+        if data:
+            for i in data:
+                year = i['year']
+                sem = i['sem']
+                del i['sem']
+                del i['year']
+                i['t'] = {
+                    "smye": year,
+                    "smty": sem
+                }
+
+
         await cache_manager.set_cache(
             Collection.INJURY,
             icloud_conn.student_id,
@@ -339,8 +379,17 @@ class StudentService:
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.proof_of_enrollment(icloud_conn, lang=lang)
 
-        if not data:
-            raise NotFoundException("Failed to fetch enrollment information")
+        data = data['detail']
+        if data:
+            for i in data:
+                year = i['smye']
+                sem = i['smty']
+                del i['smye']
+                del i['smty']
+                i['t'] = {
+                    "smye": year,
+                    "smty": int(sem)
+                }
 
         await cache_manager.set_cache(
             Collection.PROOF_OF_ENROLLMENT,
@@ -367,8 +416,17 @@ class StudentService:
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.scholarship_record(icloud_conn)
 
-        if not data:
-            raise NotFoundException("Failed to fetch scholarship information")
+        if data:
+            for i in data:
+                year = i['year']
+                sem = i['sem']
+                del i['sem']
+                del i['year']
+                i['t'] = {
+                    "smye": year,
+                    "smty": sem
+                }
+                del i['ship_pay']
 
         await cache_manager.set_cache(
             Collection.PROOF_OF_ENROLLMENT,
@@ -424,8 +482,18 @@ class StudentService:
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.dorm_record(icloud_conn)
 
-        if not data:
-            raise NotFoundException("Failed to fetch dorm information")
+        if data:
+            for i in data:
+                year = i['year']
+                sem = i['sem']
+                del i['sem']
+                del i['year']
+                i['t'] = {
+                    "smye": year,
+                    "smty": sem
+                }
+                del i['elec_mon']
+                del i['dorm_elec_money']
 
         await cache_manager.set_cache(
             Collection.DORM,
@@ -464,7 +532,7 @@ class StudentService:
             raise NotFoundException("Failed to fetch annual grade information from iCloud")
 
         if not data:
-            raise NotFoundException("Failed to fetch annual grade information")
+            return data
 
         def transform_entry(entry):
             """Helper function to transform year/sem into 't' and remove them"""
