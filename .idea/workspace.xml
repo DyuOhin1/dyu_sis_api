@@ -5,16 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c716e174-21c2-43c3-a37e-d6f4a024622c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dyu_sis_api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dyu_sis_api.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/student.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/student.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/auth_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/auth_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/graduation_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/graduation_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/leave_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/leave_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/student_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/student_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../dyu_sis_lib/sis/personal/graduation.py" beforeDir="false" afterPath="$PROJECT_DIR$/../dyu_sis_lib/sis/personal/graduation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../dyu_sis_lib/icloud/personal/personal_infomation.py" beforeDir="false" afterPath="$PROJECT_DIR$/../dyu_sis_lib/icloud/personal/personal_infomation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../dyu_sis_lib/sis/course/leave/course_leave.py" beforeDir="false" afterPath="$PROJECT_DIR$/../dyu_sis_lib/sis/course/leave/course_leave.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,7 +151,7 @@
       <workItem from="1742556049574" duration="4924000" />
       <workItem from="1742800869679" duration="2106000" />
       <workItem from="1742891964605" duration="1022000" />
-      <workItem from="1742893192535" duration="1981000" />
+      <workItem from="1742893192535" duration="9041000" />
     </task>
     <servers />
   </component>

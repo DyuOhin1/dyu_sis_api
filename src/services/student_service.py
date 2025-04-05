@@ -258,7 +258,7 @@ class StudentService:
                 }
 
         await cache_manager.set_cache(
-            Collection.INJURY,
+            Collection.MILITARY,
             icloud_conn.student_id,
             data
         )
@@ -354,7 +354,7 @@ class StudentService:
 
 
         await cache_manager.set_cache(
-            Collection.INJURY,
+            Collection.REWARDS_AND_PENALTIES,
             icloud_conn.student_id,
             data
         )
@@ -429,7 +429,7 @@ class StudentService:
                 del i['ship_pay']
 
         await cache_manager.set_cache(
-            Collection.PROOF_OF_ENROLLMENT,
+            Collection.SCHOLARSHIP,
             icloud_conn.student_id,
             data
         )
@@ -564,19 +564,6 @@ class StudentService:
             year : str,
             semester : str
     ):
-        cache_data = await cache_manager.get_cache(
-            Collection.COURSE_ATTENDANCE,
-            icloud_conn.student_id,
-            refresh=refresh,
-            semester={
-                "year": year,
-                "semester": semester
-            }
-        )
-
-        if cache_data and not refresh:
-            return cache_data
-
         data = iCloud.course_information.attendance(icloud_conn)
 
         if not data or len(data) == 0:
@@ -594,15 +581,5 @@ class StudentService:
 
             if not found:
                 raise NotFoundException("Failed to fetch course attendance information")
-
-        await cache_manager.set_cache(
-            Collection.COURSE_ATTENDANCE,
-            icloud_conn.student_id,
-            data,
-            semester={
-                "year": year,
-                "semester": semester
-            }
-        )
 
         return data
