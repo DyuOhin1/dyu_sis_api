@@ -454,9 +454,6 @@ class StudentService:
         # 從 SIS 系統獲取課程警告資訊
         data = iCloud.personal_information.printer_point(icloud_conn)
 
-        if not data:
-            raise NotFoundException("Failed to fetch printer point information")
-
         await cache_manager.set_cache(
             Collection.PRINTER_POINTS,
             icloud_conn.student_id,
