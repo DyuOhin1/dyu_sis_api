@@ -28,7 +28,6 @@ class AuthService:
     async def login(
             login_data: LoginRequest,
     ) -> Union[LoginSuccessResponse, APIResponse]:
-
         # login to Sis
         sis_conn = SIS.login(login_data.username, login_data.password)
 

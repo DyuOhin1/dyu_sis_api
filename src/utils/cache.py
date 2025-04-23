@@ -30,13 +30,16 @@ class CacheManager:
         """
         collection = self.db[collection.value]
 
+
         # 建構查詢條件
-        query = {"student_id": student_id}
         if semester:
+            query = {"student_id": student_id}
             query.update({
                 "year": semester["year"],
                 "semester": semester["semester"]
             })
+        else:
+            query = {"_id": student_id}
 
         try:
             # 查詢快取
@@ -82,8 +85,6 @@ class CacheManager:
 
         # 建構快取文件
         cache_document = {
-            "student_id": student_id,
-            "created_timestamp": current_time,
             "updated_timestamp": current_time,
             "cache_duration": cache_duration or self.default_cache_duration,
             "data": data
@@ -95,7 +96,7 @@ class CacheManager:
                 "year": semester["year"],
                 "semester": semester["semester"]
             })
-            # 使用學號、年度、學期作為查詢條件
+            # 使用學號、年度、學期
             query = {
                 "student_id": student_id,
                 "year": semester["year"],

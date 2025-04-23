@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 
@@ -11,8 +11,8 @@ class Connection(BaseModel):
     login_timestamp: float
 
 class LoginRequest(BaseModel):
-    username: str
-    password: str
+    username: str = Field(description="校園資訊系統帳號")
+    password: str = Field(description="校園資訊系統密碼")
 
 class JWTPayload(BaseModel):
     s_id: str

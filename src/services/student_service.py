@@ -308,15 +308,11 @@ class StudentService:
             icloud_conn: Connection,
             advisor_id: str,
     ):
-        # 從 SIS 系統獲取課程警告資訊
-        try:
-            data = iCloud.advisor_info(icloud_conn, advisor_id)
-            if not data or len(data) == 0:
-                raise ValueError("No advisor data found")
+        data = iCloud.advisor_info(icloud_conn, advisor_id)
+        if not data or len(data) == 0:
+            raise NotFoundException("No advisor data found")
 
-            data = data[0]
-        except Exception:
-            raise NotFoundException("Failed to fetch advisor information")
+        data = data[0]
 
         if not data:
             raise NotFoundException("Failed to fetch advisor information")
@@ -500,6 +496,7 @@ class StudentService:
 
         return data
 
+
     @staticmethod
     async def get_annual_grade(
         icloud_conn: Connection,
@@ -511,25 +508,19 @@ class StudentService:
             Collection.ANNUAL_GRADE,
             icloud_conn.student_id,
             refresh=refresh,
-            semester={
-                "year": year,
-                "semester": semester
-            }
         )
+
+        if (year and semester) and len(cache_data):
+            for data in cache_data:
+                if str(data['t']['smye']) == year and str(data['t']['smty']) == semester:
+                    return data
+
+            raise NotFoundException(f"grade of year: {year} and semester: {semester} can not be found")
 
         if cache_data and not refresh:
             return cache_data
 
-        try:
-            if not year or not semester:
-                data = iCloud.course_information.annual_grade(icloud_conn)
-            else:
-                data = iCloud.course_information.grade(icloud_conn, year, semester)
-        except Exception:
-            raise NotFoundException("Failed to fetch annual grade information from iCloud")
-
-        if not data:
-            return data
+        data = iCloud.course_information.annual_grade(icloud_conn)
 
         def transform_entry(entry):
             """Helper function to transform year/sem into 't' and remove them"""
@@ -546,10 +537,6 @@ class StudentService:
             Collection.ANNUAL_GRADE,
             icloud_conn.student_id,
             data,
-            semester={
-                "year": year,
-                "semester": semester
-            }
         )
 
         return data

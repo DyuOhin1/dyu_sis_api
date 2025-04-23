@@ -106,7 +106,7 @@
 
 ```bash
 /A-API
-│── main.py                      # FastAPI 主應用入口
+│── app.py                      # FastAPI 主應用入口
 │── config.py                     # 配置檔案 (JWT 設定、MongoDB 連線)
 │── models/                       # Pydantic 資料模型
 │   │── auth.py                    # 身份驗證相關模型

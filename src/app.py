@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
-from starlette.responses import Response
+from starlette.responses import Response, RedirectResponse
 
 from src.database import init_indexes
 from src.routes import auth, student, leave, pdf
@@ -33,13 +33,28 @@ async def lifespan(app: FastAPI):
     # 關閉時執行
     # 目前沒有需要清理的資源
 
+version = "v1"
+des = """
+**此 API 會儲存您的個人資料**，此用之前應先詳閱[使用者條款](https://dyuohin1.github.io/terms/)，若使用此服務即表示同意。
+"""
 
 app = FastAPI(
     title="Ohin1 OpenAPI",
-    description="Ohin1 OpenAPI",
-    version="1.0.0",
+    description=des,
+    version=version,
     lifespan=lifespan,
+    terms_of_service="https://dyuohin1.github.io/terms/",
 )
+
+import fastapi.openapi.utils as fu
+
+fu.validation_error_response_definition = {
+    "title": "HTTPValidationError",
+    "type": "object",
+    "properties": {
+        "detail": {"title": "Message", "type": "string"},
+    },
+}
 
 # CORS 設定
 app.add_middleware(
@@ -51,8 +66,6 @@ app.add_middleware(
 )
 app.add_middleware(CharsetMiddleware)
 
-version = "v1"
-
 # 路由註冊
 app.include_router(auth.router, prefix=f"/api/{version}/auth", tags=["Authentication"])
 app.include_router(student.router, prefix=f"/api/{version}/student", tags=["Personal Information"])
@@ -61,4 +74,8 @@ app.include_router(pdf.router, prefix=f"/api/{version}/pdf", tags=["PDF file gen
 
 @app.get("/")
 async def root():
-    return {"message": "Ohin1 OpenAPI is running..."}
+    return RedirectResponse(url="https://dyuohin1.github.io/terms/")
+
+@app.get("/terms")
+async def terms():
+    return RedirectResponse(url="https://dyuohin1.github.io/terms/")
