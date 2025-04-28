@@ -619,7 +619,69 @@ async def get_course_warning(
             detail=str(e)
         )
 
-@router.get("/course/grade")
+@router.get(
+    "/course/grade",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "course": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "title": {"type": "string", "description": "課程名稱"},
+                                                    "enTitle": {"type": "string", "description": "英文課程名稱"},
+                                                    "codeNum": {"type": "string", "description": "課號"},
+                                                    "cla": {"type": "string", "description": "課程代碼"},
+                                                    "compulsory": {"type": "string", "description": "必/選修"},
+                                                    "credit": {"type": "integer", "description": "學分數"},
+                                                    "score": {"type": "string", "description": "成績"},
+                                                    "note": {"type": "string", "description": "備註"}
+                                                }
+                                            }
+                                        },
+                                        "complex": {
+                                            "type": "object",
+                                            "properties": {
+                                                "totalAverage": {"type": "number", "description": "總平均"},
+                                                "conductGrade": {"type": "integer", "description": "操行成績"},
+                                                "earnCredit": {"type": "integer", "description": "實得學分"},
+                                                "credit": {"type": "integer", "description": "修課學分"},
+                                                "classRank": {"type": "integer", "description": "班排名"},
+                                                "classPeopleNum": {"type": "integer", "description": "班級人數"},
+                                                "semRank": {"type": "integer", "description": "系排名"},
+                                                "semPeopleNum": {"type": "integer", "description": "系人數"}
+                                            }
+                                        },
+                                        "t": {
+                                            "type": "object",
+                                            "properties": {
+                                                "smye": {"type": "integer", "description": "學年"},
+                                                "smty": {"type": "integer", "description": "學期"}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得指定學年度課程成績",
+    description="取得指定學期課程成績，若為指定則將取得上一學期課程成績。"
+)
 async def get_grade(
     year: Optional[str] = Query(None, description="學年 (例如: 112)"),
     semester: Optional[str] = Query(None, description="學期 (1 或 2)"),
@@ -647,7 +709,30 @@ async def get_grade(
         )
 
 # 其他個人資訊路由
-@router.get("/barcode")
+@router.get(
+    "/barcode",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "string",
+                                "description": "Base64編碼的圖片資料",
+                                "format": "byte"
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得個人學生證證件學號條碼照片",
+    description="取得個人學生證證件學號條碼照片，以 Base64 編碼呈現。"
+)
 async def get_barcode(
     token: dict = Depends(verify_jwt_token)
 ):
@@ -672,7 +757,30 @@ async def get_barcode(
         )
 
 
-@router.get("/image")
+@router.get(
+    "/image",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "string",
+                                "description": "Base64編碼的圖片資料",
+                                "format": "byte"
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得個人學生證證件個人大頭照照片",
+    description="取得個人學生證證件個人大頭照照片，以 Base64 編碼呈現。"
+)
 async def get_image(
     token: dict = Depends(verify_jwt_token)
 ):
@@ -696,7 +804,71 @@ async def get_image(
             detail=str(e)
         )
 
-@router.get("/injury")
+@router.get(
+    "/injury",
+    responses={
+        200: {
+            "description": "成功獲取學生健康紀錄資料",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "heal_time": {
+                                            "type": "string",
+                                            "description": "就醫時間"
+                                        },
+                                        "heal_campus": {
+                                            "type": "string",
+                                            "description": "就醫地點類型"
+                                        },
+                                        "heal_name": {
+                                            "type": "string",
+                                            "description": "傷病名稱"
+                                        },
+                                        "heal_place": {
+                                            "type": "string",
+                                            "description": "受傷地點"
+                                        },
+                                        "heal_wound": {
+                                            "type": "string",
+                                            "description": "受傷部位"
+                                        },
+                                        "heal_process": {
+                                            "type": "string",
+                                            "description": "處理過程"
+                                        },
+                                        "t": {
+                                            "type": "object",
+                                            "properties": {
+                                                "smye": {
+                                                    "type": "integer",
+                                                    "description": "學年"
+                                                },
+                                                "smty": {
+                                                    "type": "integer",
+                                                    "description": "學期"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得個人在校受傷紀錄",
+    description="取得個人在校受傷紀錄"
+)
 async def get_injury(
         refresh: bool = Query(False, description="強制更新快取"),
         token: dict = Depends(verify_jwt_token)
@@ -721,7 +893,55 @@ async def get_injury(
             detail=str(e)
         )
 
-@router.get("/military")
+@router.get(
+    "/military",
+    responses={
+        200: {
+            "description": "成功獲取學生兵役資料",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "mil_status": {
+                                            "type": "string",
+                                            "description": "兵役狀態"
+                                        },
+                                        "grad_date": {
+                                            "type": "string",
+                                            "description": "預計畢業日期"
+                                        },
+                                        "t": {
+                                            "type": "object",
+                                            "properties": {
+                                                "smye": {
+                                                    "type": "integer",
+                                                    "description": "學年"
+                                                },
+                                                "smty": {
+                                                    "type": "integer",
+                                                    "description": "學期"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得個人兵役紀錄",
+    description="取得個人兵役紀錄"
+)
 async def get_military(
     refresh: bool = Query(False, description="強制更新快取"),
     token: dict = Depends(verify_jwt_token)
@@ -746,7 +966,59 @@ async def get_military(
             detail=str(e)
         )
 
-@router.get("/advisor")
+@router.get(
+    "/advisor",
+    responses={
+        200: {
+            "description": "成功獲取學生導師資料",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "teno": {
+                                            "type": "string",
+                                            "description": "教師編號"
+                                        },
+                                        "epno": {
+                                            "type": "string",
+                                            "description": "教師代碼"
+                                        },
+                                        "tutor_status": {
+                                            "type": "string",
+                                            "description": "導師狀態碼"
+                                        },
+                                        "t": {
+                                            "type": "object",
+                                            "properties": {
+                                                "smye": {
+                                                    "type": "integer",
+                                                    "description": "學年"
+                                                },
+                                                "smty": {
+                                                    "type": "integer",
+                                                    "description": "學期"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得個人導師列表",
+    description="取得個人導師列表，其中 teno 可用於取得該導師相關聯絡訊息。tutor_status 有三狀態：A 師徒導師、B 系主任、0 班級導師。"
+)
 async def get_advisors(
     refresh: bool = Query(False, description="強制更新快取"),
     token: dict = Depends(verify_jwt_token)
