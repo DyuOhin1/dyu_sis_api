@@ -1043,7 +1043,61 @@ async def get_advisors(
             detail=str(e)
         )
 
-@router.get("/advisor/{advisor_id}")
+@router.get(
+    "/advisor/{advisor_id}",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "teno": {
+                                            "type": "string",
+                                            "description": "教師編號"
+                                        },
+                                        "epno": {
+                                            "type": "string",
+                                            "description": "教師代碼"
+                                        },
+                                        "tutor_status": {
+                                            "type": "string",
+                                            "description": "導師類型"
+                                        },
+                                        "t": {
+                                            "type": "object",
+                                            "description": "指導學年",
+                                            "properties": {
+                                                "smye": {
+                                                    "type": "integer",
+                                                    "description": "學年（如 112）"
+                                                },
+                                                "smty": {
+                                                    "type": "integer",
+                                                    "description": "學期（1 或 2）"
+                                                }
+                                            },
+                                            "required": ["smye", "smty"]
+                                        }
+                                    },
+                                    "required": ["teno", "epno", "tutor_status", "t"]
+                                }
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得指定導師聯絡資訊及大頭照",
+    description="取得指定導師聯絡資訊及大頭照，img 若為空值表示無照片資料。"
+)
 async def get_advisor_info(
     advisor_id: str,
     token: dict = Depends(verify_jwt_token)
@@ -1068,7 +1122,65 @@ async def get_advisor_info(
             detail=str(e)
         )
 
-@router.get("/rewards-and-penalties")
+@router.get(
+    "/rewards-and-penalties",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "trueday": {
+                                            "type": "string",
+                                            "description": "獎懲日期（格式為 YYYY/MM/DD）"
+                                        },
+                                        "rewold": {
+                                            "type": "string",
+                                            "description": "獎懲類別（如嘉獎、小功等）"
+                                        },
+                                        "frequency": {
+                                            "type": "integer",
+                                            "description": "獎懲次數"
+                                        },
+                                        "reason": {
+                                            "type": "string",
+                                            "description": "獎懲原因"
+                                        },
+                                        "t": {
+                                            "type": "object",
+                                            "description": "學期資訊",
+                                            "properties": {
+                                                "smye": {
+                                                    "type": "integer",
+                                                    "description": "學年（如 113）"
+                                                },
+                                                "smty": {
+                                                    "type": "integer",
+                                                    "description": "學期（1 或 2）"
+                                                }
+                                            },
+                                            "required": ["smye", "smty"]
+                                        }
+                                    },
+                                    "required": ["trueday", "rewold", "frequency", "reason", "t"]
+                                }
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得個人獎懲紀錄",
+    description="取得個人獎懲紀錄"
+)
 async def get_rewards_and_penalties(
     refresh: bool = Query(False, description="強制更新快取"),
     token: dict = Depends(verify_jwt_token)
@@ -1093,7 +1205,116 @@ async def get_rewards_and_penalties(
             detail=str(e)
         )
 
-@router.get("/enrollment")
+@router.get(
+    "/enrollment",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "showItem": {
+                                            "type": "string",
+                                            "description": "未知"
+                                        },
+                                        "stno": {
+                                            "type": "string",
+                                            "description": "學號"
+                                        },
+                                        "stno_encode": {
+                                            "type": "string",
+                                            "description": "編碼後的學號"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "description": "在學狀態代碼"
+                                        },
+                                        "delay": {
+                                            "type": "string",
+                                            "description": "是否延畢代碼"
+                                        },
+                                        "isPay": {
+                                            "type": "integer",
+                                            "description": "是否已繳費（1 表示是）"
+                                        },
+                                        "pay_msg": {
+                                            "type": "string",
+                                            "description": "繳費訊息（若無則為空）"
+                                        },
+                                        "isPrint": {
+                                            "type": "integer",
+                                            "description": "是否可列印（1 表示可列印）"
+                                        },
+                                        "edu": {
+                                            "type": "string",
+                                            "description": "學制名稱"
+                                        },
+                                        "dept": {
+                                            "type": "string",
+                                            "description": "系所名稱"
+                                        },
+                                        "group_name": {
+                                            "type": "string",
+                                            "description": "組別名稱"
+                                        },
+                                        "class": {
+                                            "type": "string",
+                                            "description": "班級名稱"
+                                        },
+                                        "pdf": {
+                                            "type": "string",
+                                            "description": "PDF 證明文件連結"
+                                        },
+                                        "t": {
+                                            "type": "object",
+                                            "description": "學期資訊",
+                                            "properties": {
+                                                "smye": {
+                                                    "type": "integer",
+                                                    "description": "學年（如 113）"
+                                                },
+                                                "smty": {
+                                                    "type": "integer",
+                                                    "description": "學期（1 或 2）"
+                                                }
+                                            },
+                                            "required": ["smye", "smty"]
+                                        }
+                                    },
+                                    "required": [
+                                        "showItem",
+                                        "stno",
+                                        "stno_encode",
+                                        "status",
+                                        "delay",
+                                        "isPay",
+                                        "pay_msg",
+                                        "isPrint",
+                                        "edu",
+                                        "dept",
+                                        "group_name",
+                                        "class",
+                                        "pdf",
+                                        "t"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得個人註冊證明",
+    description="取得個人註冊證明，可選擇語言 zh-TW、zh-CN 以及 en，其中中文不分正體以及簡體。"
+)
 async def get_enrollment(
     lang : Lang = Lang.ZH_TW,
     refresh: bool = Query(False, description="強制更新快取"),
@@ -1119,7 +1340,57 @@ async def get_enrollment(
             detail=str(e)
         )
 
-@router.get("/scholarship")
+@router.get(
+    "/scholarship",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ship_name": {
+                                            "type": "string",
+                                            "description": "獎助學金名稱"
+                                        },
+                                        "ship_amount": {
+                                            "type": "integer",
+                                            "description": "金額（單位：元）"
+                                        },
+                                        "t": {
+                                            "type": "object",
+                                            "description": "學期資訊",
+                                            "properties": {
+                                                "smye": {
+                                                    "type": "integer",
+                                                    "description": "學年（如 113）"
+                                                },
+                                                "smty": {
+                                                    "type": "integer",
+                                                    "description": "學期（1 或 2）"
+                                                }
+                                            },
+                                            "required": ["smye", "smty"]
+                                        }
+                                    },
+                                    "required": ["ship_name", "ship_amount", "t"]
+                                }
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得獎學金紀錄",
+    description="取得獎學金紀錄"
+)
 async def get_scholarship(
     refresh: bool = Query(False, description="強制更新快取"),
     token: dict = Depends(verify_jwt_token)
@@ -1145,7 +1416,35 @@ async def get_scholarship(
         )
 
 
-@router.get("/printer-point")
+@router.get(
+    "/printer-point",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "object",
+                                "properties": {
+                                    "point": {
+                                        "type": "integer",
+                                        "description": "獲得的獎懲點數總計"
+                                    }
+                                },
+                                "required": ["point"]
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得個人列印點數",
+    description="取得個人列印點數"
+)
 async def get_printer_point(
     refresh: bool = Query(False, description="強制更新快取"),
     token: dict = Depends(verify_jwt_token)
@@ -1170,7 +1469,84 @@ async def get_printer_point(
             detail=str(e)
         )
 
-@router.get("/graduation")
+@router.get(
+    "/graduation",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "description": "資料識別碼"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "description": "檢定項目名稱"
+                                                },
+                                                "score": {
+                                                    "type": "string",
+                                                    "description": "得分"
+                                                },
+                                                "issuer": {
+                                                    "type": ["string", "null"],
+                                                    "description": "簽發者"
+                                                },
+                                                "t": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "smye": {
+                                                            "type": "integer",
+                                                            "description": "學年"
+                                                        },
+                                                        "smty": {
+                                                            "type": "integer",
+                                                            "description": "學期"
+                                                        }
+                                                    },
+                                                    "required": ["smye", "smty"]
+                                                }
+                                            },
+                                            "required": ["id", "title", "score", "issuer", "t"]
+                                        }
+                                    },
+                                    "passable": {
+                                        "type": "object",
+                                        "properties": {
+                                            "title": {
+                                                "type": "string",
+                                                "description": "畢業門檻名稱"
+                                            },
+                                            "result": {
+                                                "type": "string",
+                                                "description": "達成結果"
+                                            }
+                                        },
+                                        "required": ["title", "result"]
+                                    }
+                                },
+                                "required": ["data", "passable"]
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得畢業門檻資訊",
+    description="取得畢業門檻資訊，可選擇取得 chinese 中文畢業門檻、english 英文畢業門檻、computer 資訊畢業門檻、workplace_exp 職場體驗畢業門檻、overview 修課學分畢業門檻。"
+)
 async def get_graduation_info(
     graduation_type: GraduationType,
     refresh: bool = Query(False, description="強制更新快取"),
@@ -1202,7 +1578,64 @@ async def get_graduation_info(
             detail=str(e)
         )
 
-@router.get("/dorm")
+@router.get(
+    "/dorm",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "dorm_space": {
+                                            "type": "string",
+                                            "description": "宿舍名稱"
+                                        },
+                                        "dorm_id": {
+                                            "type": "string",
+                                            "description": "宿舍房間代碼"
+                                        },
+                                        "dorm_no": {
+                                            "type": "integer",
+                                            "description": "寢室人數"
+                                        },
+                                        "dorm_money": {
+                                            "type": "integer",
+                                            "description": "住宿費金額"
+                                        },
+                                        "t": {
+                                            "type": "object",
+                                            "properties": {
+                                                "smye": {
+                                                    "type": "integer",
+                                                    "description": "學年"
+                                                },
+                                                "smty": {
+                                                    "type": "integer",
+                                                    "description": "學期"
+                                                }
+                                            },
+                                            "required": ["smye", "smty"]
+                                        }
+                                    },
+                                    "required": ["dorm_space", "dorm_id", "dorm_no", "dorm_money", "t"]
+                                }
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得住宿紀錄",
+    description="取得住宿紀錄"
+)
 async def get_dorm(
     refresh: bool = Query(False, description="強制更新快取"),
     token: dict = Depends(verify_jwt_token)

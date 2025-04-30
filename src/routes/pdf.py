@@ -10,7 +10,30 @@ from ..utils.exception import StudentInfoNotFoundException
 
 router = APIRouter(prefix="")
 
-@router.get("/graduation")
+@router.get(
+    "/graduation",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "string",
+                                "description": "PDF 資料的 base64 編碼"
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    }
+    ,
+    summary="取得畢業學分總表 PDF 檔案",
+    description="取得畢業學分總表 PDF 檔案，以 Base64 編碼呈現。"
+)
 async def get_graduation_overview_pdf(
     token: dict = Depends(verify_jwt_token)
 ):
@@ -35,10 +58,32 @@ async def get_graduation_overview_pdf(
             detail=str(e)
         )
 
-@router.get("/course")
+@router.get(
+    "/course",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "string",
+                                "description": "PDF 資料的 base64 編碼"
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得指定學年度修課清單 PDF 檔案",
+    description="取得指定學年度修課清單 PDF 檔案，以 Base64 編碼呈現。"
+)
 async def get_course_list_pdf(
-    year: Optional[str] = Query(None, description="學年 (例如: 112)"),
-    semester: Optional[str] = Query(None, description="學期 (1 或 2)"),
+    year: Optional[str] = Query(None, description="學年"),
+    semester: Optional[str] = Query(None, description="學期"),
     token: dict = Depends(verify_jwt_token)
 ):
     try:
@@ -68,10 +113,32 @@ async def get_course_list_pdf(
             detail=str(e)
         )
 
-@router.get("/enrollment")
+@router.get(
+    "/enrollment",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "string",
+                                "description": "PDF 資料的 base64 編碼"
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得指定學年度註冊證明 PDF 檔案",
+    description="取得指定學年度註冊證明 PDF 檔案，以 Base64 編碼呈現。"
+)
 async def get_proof_or_enrollment_pdf(
-    year: Optional[str] = Query(None, description="學年 (例如: 112)"),
-    semester: Optional[str] = Query(None, description="學期 (1 或 2)"),
+    year: Optional[str] = Query(None, description="學年"),
+    semester: Optional[str] = Query(None, description="學期"),
     token: dict = Depends(verify_jwt_token)
 ):
     try:
@@ -101,10 +168,32 @@ async def get_proof_or_enrollment_pdf(
             detail=str(e)
         )
 
-@router.get("/timetable")
+@router.get(
+    "/timetable",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "string",
+                                "description": "PDF 資料的 base64 編碼"
+                            }
+                        },
+                        "required": ["data"]
+                    }
+                }
+            }
+        }
+    },
+    summary="取得指定學年度修課課表 PDF 檔案",
+    description="取得指定學年度修課課表 PDF 檔案，以 Base64 編碼呈現。"
+)
 async def get_course_timetable(
-    year: Optional[str] = Query(None, description="學年 (例如: 112)"),
-    semester: Optional[str] = Query(None, description="學期 (1 或 2)"),
+    year: Optional[str] = Query(None, description="學年"),
+    semester: Optional[str] = Query(None, description="學期"),
     token: dict = Depends(verify_jwt_token)
 ):
     try:

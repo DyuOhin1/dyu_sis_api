@@ -9,6 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 載入 .env 檔案
 load_dotenv(BASE_DIR / ".env")
 
+TERMS_COOKIE_NAME = "terms_accepted"
+
 class Settings(BaseSettings):
     # MongoDB 設定
     MONGODB_URL: str
