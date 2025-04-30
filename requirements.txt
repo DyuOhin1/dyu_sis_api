@@ -11,7 +11,7 @@ dyu_sis_lib @ file:///Users/zhangf099/ohin1/code/dyu_sis_lib/dist/dyu_sis_lib-1.
 ecdsa==0.19.0
 exceptiongroup==1.2.2
 fastapi==0.115.7
-h11==0.14.0
+h11==0.16.0
 idna==3.10
 Jinja2==3.1.6
 MarkupSafe==3.0.2
@@ -22,7 +22,7 @@ pydantic-settings==2.7.1
 pydantic_core==2.27.2
 pymongo==4.11.1
 python-dotenv==1.0.1
-python-jose==3.3.0
+python-jose==3.4.0
 python-multipart==0.0.20
 requests==2.32.3
 rsa==4.9
